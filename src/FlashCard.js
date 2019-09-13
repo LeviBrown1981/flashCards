@@ -1,20 +1,51 @@
 import React from "react";
-import { Button, Table, } from "semantic-ui-react";
+import FlashCardForm from "./FlashCardForm";
+import { Button, Card, } from "semantic-ui-react";
 
-
-const FlashCard = (props, { questions, answers, remove, }) => (
-  <Table.Row>
-    <Table.Row key={ id } remove={remove} > 
-      <Table.HeaderCell>Question</Table.HeaderCell>
-      <Table.Cell>{ props.flashcard.Question }</Table.Cell>
-      <Table.HeaderCell>Answers</Table.HeaderCell>
-      <Table.Cell>{ props.flashcard.Answer }</Table.Cell>
-        <Table.Cell>
-        <Button color ="blue">
-          Delete
-        </Button>
-      </Table.Cell>
-    </Table.Row>  
+const FlashCard = () => (
+  <h1>FlashCard</h1>
 );
+
+
+class FlashCard extends React.Component {
+  state = { showBack: false, editing: false, };
+
+  toggleCard = () => {
+    this.setState({ showBack: !this.state.showBack, });
+  };
+
+  toggleEdit = () => {
+    this.setState({ editing: !this.state.editing, });
+  };
+
+  render() {
+    const { showBack, } = this.state;
+    const { back, front, remove, id, } = this.props;
+    return (
+      <Card>
+        {
+          this.state.editing ?
+            <FlashCardForm 
+              card={this.props} 
+              edit={this.props.edit} 
+              toggleEdit={this.toggleEdit} 
+            />
+          :
+            <>
+              <Card.Content onClick={this.toggleCard}>
+                <Card.Header>
+                  { showBack ? back : front }
+                </Card.Header>          
+              </Card.Content>
+              <Card.Content extra>
+                <Button color="yellow" onClick={this.toggleEdit}>Edit</Button>
+                <Button color="red" onClick={() => remove(id)}>Delete</Button>
+              </Card.Content>
+            </>
+        }
+      </Card>
+    );
+  };
+};
 
 export default FlashCard;

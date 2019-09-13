@@ -1,46 +1,54 @@
 import React from "react";
 import { Form, } from "semantic-ui-react";
-import FlashCards from "./FlashCards";
-
 
 class FlashCardForm extends React.Component {
-  state = { question: "", answer: "", };
+  state = { front: "", back: "", };
+
+  componentDidMount() {
+    if (this.props.card) {
+      const { front, back, } = this.props.card;
+      this.setState({ front, back, });
+    };
+  };
+  
+  handleChange = (e, { name, value, }) => {
+    this.setState({ [name]: value, });
+  };
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.props.add(this.state);
-    this.setState({ question: "", answer: "", });
-  }
-
-  handleChange = (e) => {
-    this.setState({ [e.target.question]: e.target.value, });
-  }; 
+    if (this.props.card) {
+      this.props.edit({ ...this.state, id: this.props.card.id, });
+      this.props.toggleEdit();
+    } else {
+      this.props.add(this.state);
+    }
+  };
 
   render() {
+    const { front, back, } = this.state;
     return (
       <Form onSubmit={this.handleSubmit}>
-        <Form.Group widths="equal">
-          <Form.Input 
-            fluid 
-            label="Question" 
-            placeholder="Question" 
-            name="question" 
-            value={this.state.question} 
-            onChange={this.handleChange}
-          />
-          <Form.Input 
-            fluid 
-            label="Answer" 
-            placeholder="Answer" 
-            name="answer" 
-            value={this.state.answer} 
-            onChange={this.handleChange}
-          />
-          <Form.Button>Submit</Form.Button>
-        </Form.Group>
+        <Form.Input 
+          name="front"
+          label="Card Front"
+          placeholder="Card Front"
+          value={front}
+          onChange={this.handleChange}
+          required
+        />
+        <Form.Input 
+          name="back"
+          label="Card Back"
+          placeholder="Card Back"
+          value={back}
+          onChange={this.handleChange}
+          required
+        />
+        <Form.Button>Submit</Form.Button>
       </Form>
-    )  
-  }
-}
+    );
+  };
+};
 
 export default FlashCardForm;
